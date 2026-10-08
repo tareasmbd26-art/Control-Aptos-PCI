@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+<title>Cronograma Sistema Contra Incendio</title>
+
+<!-- SheetJS (Excel) -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<!-- html2canvas (Imagen PNG) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root{
+    --bg:#eef2f7;
+    --ink:#0f1d2b;
+    --muted:#6b7c93;
+    --navy:#0f2b46;
+    --navy-2:#1c4a78;
+    --accent:#ff6a00;
+    --green:#008000;
+    --red:#FF2C2C;
+    --line:#d8e0ea;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-text-size-adjust:100%;
+    -webkit-tap-highlight-color:transparent;
+    min-height:100vh;
+  }
+
+  /* ============ BARRA SUPERIOR ============ */
+  .topbar{
+    position:sticky; top:0; z-index:60;
+    background:linear-gradient(135deg, var(--navy), var(--navy-2));
+    color:#fff;
+    box-shadow:0 4px 14px rgba(15,43,70,.28);
+    padding:10px 16px;
+  }
+  .topbar-inner{
+    max-width:1500px; margin:0 auto;
+    display:flex; flex-wrap:wrap; gap:10px;
+    align-items:center; justify-content:space-between;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-size:14px; font-weight:700; letter-spacing:.2px;
+  }
+  .brand .logo{
+    width:36px; height:36px; border-radius:9px; flex:0 0 auto;
+    display:grid; place-items:center; font-size:18px;
+    background:linear-gradient(135deg,#ff8a33,#ff5a00);
+    box-shadow:0 4px 10px rgba(255,90,0,.35);
+  }
+  .brand small{font-weight:400; font-size:11px; opacity:.8; display:block;}
+
+  .actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .btn{
+    border:0; border-radius:9px; padding:9px 12px;
+    font-family:inherit; font-size:12.5px; font-weight:600;
+    display:inline-flex; align-items:center; gap:6px;
+    cursor:pointer; white-space:nowrap;
+    transition:transform .1s, background .15s, box-shadow .15s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{
+    background:var(--accent); color:#fff;
+    box-shadow:0 6px 14px rgba(255,106,0,.35);
+  }
+  .btn-primary:hover{background:#ff7f22;}
+  .btn-image{
+    background:#1f8a4c; color:#fff;
+    box-shadow:0 6px 14px rgba(31,138,76,.35);
+  }
+  .btn-image:hover{background:#25a05a;}
+  .btn-ghost{
+    background:rgba(255,255,255,.12); color:#fff;
+    border:1px solid rgba(255,255,255,.30);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,.22);}
+  .btn-danger{
+    background:rgba(255,44,44,.22); color:#ffdede;
+    border:1px solid rgba(255,120,120,.45);
+  }
+  .btn-danger:hover{background:rgba(255,44,44,.38);}
+  .btn[disabled]{opacity:.6; cursor:wait;}
+
+  /* Indicador de guardado */
+  .save-status{
+    font-size:11px; padding:5px 10px;
+    border-radius:20px; font-weight:700;
+    background:rgba(37,160,90,.35);
+    color:#e6fff0;
+    white-space:nowrap;
+    transition:background .25s;
+  }
+  .save-status.saving{background:rgba(255,180,0,.35); color:#fff6dd;}
+
+  /* ============ CONTENEDOR ============ */
+  .wrap{
+    max-width:1500px; margin:0 auto;
+    padding:14px 16px 60px;
+  }
+
+  /* ============ LEYENDA ============ */
+  .legend{
+    display:flex; flex-wrap:wrap; align-items:center;
+    gap:8px 18px;
+    background:#fff;
+    border-left:5px solid var(--accent);
+    border-radius:8px;
+    padding:10px 14px;
+    margin-bottom:12px;
+    box-shadow:0 2px 8px rgba(15,43,70,.06);
+    font-size:12.5px;
+    color:#33475b;
+  }
+  .legend .legend-title{
+    font-weight:800; color:var(--navy);
+    text-transform:uppercase; font-size:11px; letter-spacing:.3px;
+  }
+  .chip{display:inline-flex; align-items:center; gap:6px; font-weight:600;}
+  .dot{
+    width:14px; height:14px; border-radius:4px; flex:0 0 auto;
+    border:1px solid rgba(0,0,0,.18);
+    box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);
+  }
+  .dot.pend{background:#fff;}
+  .dot.att{background:var(--green);}
+  .dot.no{background:var(--red);}
+  .legend .sep{width:1px; height:16px; background:var(--line);}
+
+  /* ============ CABECERA DOCUMENTO ============ */
+  .doc-head{
+    background:#fff;
+    border-radius:var(--radius);
+    padding:12px 14px;
+    margin-bottom:14px;
+    box-shadow:0 2px 8px rgba(15,43,70,.06);
+    border:1px solid var(--line);
+  }
+  .doc-title{
+    margin:0;
+    font-size:clamp(15px, 2.2vw, 22px);
+    font-weight:800;
+    color:#fff;
+    background:#7AABD4;
+    padding:11px 14px;
+    border-radius:8px;
+    text-align:center;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    outline:none;
+    border:2px solid transparent;
+    transition:border-color .15s;
+    cursor:text;
+    line-height:1.25;
+  }
+  .doc-title:hover{border-color:#4A90C4;}
+  .doc-title:focus{border-color:var(--accent);}
+
+  /* ============ GRID DE SEMANAS ============ */
+  .weeks-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:14px;
+    align-items:start;
+  }
+  .week-column{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-width:0;
+  }
+
+  /* ============ TARJETA DE DÍA ============ */
+  .day-card{
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 2px 6px rgba(15,43,70,.10);
+    background:#fff;
+  }
+  .day-header{
+    padding:7px 8px;
+    font-size:12px;
+    font-weight:800;
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    color:#fff;
+    outline:none;
+    border:2px solid transparent;
+    transition:border-color .15s;
+    cursor:text;
+    line-height:1.2;
+    word-break:break-word;
+  }
+  .day-header:hover{border-color:rgba(255,255,255,.55);}
+  .day-header:focus{border-color:var(--accent);}
+
+  /* ============ TABLA DEL DÍA ============ */
+  .day-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+    table-layout:fixed;
+  }
+  .day-table td{
+    padding:5px 4px;
+    border:1px solid rgba(0,0,0,.10);
+    text-align:center;
+    vertical-align:middle;
+    outline:none;
+    cursor:text;
+    transition:background .18s, color .18s, box-shadow .15s;
+    word-break:break-word;
+    line-height:1.2;
+    min-height:28px;
+  }
+  .day-table td:hover{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);}
+  .day-table td:focus{box-shadow:inset 0 0 0 2px var(--accent);}
+
+  .day-table .idx-l,
+  .day-table .idx-r{
+    width:9%;
+    font-size:11px;
+    font-weight:600;
+    color:#555;
+    background:rgba(255,255,255,.55);
+  }
+  .day-table .apt{
+    width:50%;
+    font-weight:800;
+    font-size:13px;
+    color:#111;
+    background:#fff;
+    cursor:pointer;
+  }
+  .day-table .tower{
+    width:32%;
+    font-size:12px;
+    font-weight:600;
+    background:rgba(255,255,255,.78);
+    color:#2a3a4a;
+  }
+  .day-table .apt:empty::before{
+    content:"—";
+    color:#c8d2dc;
+    font-weight:400;
+  }
+
+  /* ============ COLORES POR SEMANA ============ */
+  .week-column.color-blue .day-header{background:#4A90C4;}
+  .week-column.color-blue .idx-l,
+  .week-column.color-blue .idx-r,
+  .week-column.color-blue .tower{background:#D6E9F8;}
+
+  .week-column.color-green .day-header{background:#6CB33F;}
+  .week-column.color-green .idx-l,
+  .week-column.color-green .idx-r,
+  .week-column.color-green .tower{background:#D6EAC8;}
+
+  .week-column.color-pink .day-header{background:#D8559A;}
+  .week-column.color-pink .idx-l,
+  .week-column.color-pink .idx-r,
+  .week-column.color-pink .tower{background:#F8CFE5;}
+
+  .week-column.color-yellow .day-header{background:#E8A020;}
+  .week-column.color-yellow .idx-l,
+  .week-column.color-yellow .idx-r,
+  .week-column.color-yellow .tower{background:#F9DC8A;}
+
+  /* ============ ESTADOS ============ */
+  .day-table .apt.state[data-state="pendiente"]{background:#ffffff; color:#111;}
+  .day-table .apt.state[data-state="atendido"]{background:#008000; color:#ffffff;}
+  .day-table .apt.state[data-state="no-atendido"]{background:#FF2C2C; color:#ffffff;}
+
+  .day-table .apt{
+    -webkit-touch-callout:none;
+    -webkit-user-select:text;
+    user-select:text;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:600px){
+    .wrap{padding:10px 10px 50px;}
+    .topbar{padding:8px 10px;}
+    .brand small{display:none;}
+    .btn{padding:7px 9px; font-size:11.5px;}
+    .legend{gap:6px 12px; font-size:12px; padding:8px 10px;}
+    .weeks-grid{grid-template-columns:1fr; gap:12px;}
+    .day-table td{font-size:14px; padding:7px 4px;}
+    .day-table .apt{font-size:16px; font-weight:800;}
+    .day-table .tower{font-size:14px;}
+    .day-header{font-size:13px; padding:8px;}
+  }
+
+  @media print{
+    .topbar{display:none;}
+    body{background:#fff;}
+    .weeks-grid{grid-template-columns:repeat(4, 1fr);}
+    .day-card{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== BARRA SUPERIOR ===================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">🔥</div>
+      <div>
+        <div>Control de Cronogramas — Sistemas Contra Incendio</div>
+        <small>Inspección y mantenimiento por apartamentos · Torres de edificios</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <span class="save-status" id="saveStatus">✓ Guardado</span>
+
+      <button type="button" class="btn btn-ghost" id="btnAddWeek">➕ Semana</button>
+      <button type="button" class="btn btn-ghost" id="btnAddDay">➕ Día</button>
+
+      <button type="button" class="btn btn-ghost" id="btnBackup" title="Descargar respaldo .json">💾 Respaldar</button>
+      <button type="button" class="btn btn-ghost" id="btnRestore" title="Cargar respaldo .json">📂 Restaurar</button>
+      <input type="file" id="fileRestore" accept=".json,application/json" hidden>
+
+      <button type="button" class="btn btn-danger" id="btnReset" title="Borrar todo y empezar de cero">🗑️ Reiniciar</button>
+
+      <button type="button" class="btn btn-image" id="btnExportImg">📸 Imagen</button>
+      <button type="button" class="btn btn-primary" id="btnExport">📥 Excel</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="captureArea">
+
+  <!-- ===================== LEYENDA ===================== -->
+  <section class="legend">
+    <span class="legend-title">Guía de uso</span>
+    <span>👆 <strong>1 toque/clic</strong> = editar texto</span>
+    <span>👆👆 <strong>Doble toque/clic</strong> sobre el apartamento = cambiar estado</span>
+    <span class="sep"></span>
+    <span class="chip"><span class="dot pend"></span> Pendiente</span>
+    <span class="chip"><span class="dot att"></span> Atendido</span>
+    <span class="chip"><span class="dot no"></span> No Atendido</span>
+    <span class="sep"></span>
+    <span>💾 Los cambios se guardan solos.</span>
+  </section>
+
+  <!-- ===================== TÍTULO EDITABLE ===================== -->
+  <section class="doc-head">
+    <h1 class="doc-title" id="docTitle" contenteditable="true" spellcheck="false">Cronograma para Sistema Contra Incendio Torre 1</h1>
+  </section>
+
+  <!-- ===================== GRID DE SEMANAS ===================== -->
+  <div class="weeks-grid" id="weeksGrid"></div>
+
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============================================================
+     CONFIGURACIÓN
+     ============================================================ */
+  const ROWS_PER_DAY   = 5;
+  const COLOR_CYCLE    = ['blue','green','pink','yellow'];
+  const STORAGE_KEY    = 'cronograma_contra_incendio_v1';
+  const SCHEMA_VERSION = 1;
+
+  // Datos por defecto (solo se usan la primera vez)
+  const CRONOGRAMA_DEFAULT = [
+    { color:'blue', dias:[
+      ['LUNES 05 OCTUBRE',      ['43C-PH','41-42A-PH','41-42B-PH','40A','40B']],
+      ['MARTES 06 OCTUBRE',     ['39A','39B','39C','38A','38B']],
+      ['MIÉRCOLES 07 OCTUBRE',  ['37A','37B','37C','36A','36B']],
+      ['JUEVES 08 OCTUBRE',     ['35A','35B','35C','34A','34B']],
+      ['VIERNES 09 OCTUBRE',    ['33A','33B','33C','32A','32B']]
+    ]},
+    { color:'green', dias:[
+      ['LUNES 12 OCTUBRE',      ['31A','31B','31C','30A','30B']],
+      ['MARTES 13 OCTUBRE',     ['29A','29B','29C','28A','28B']],
+      ['MIÉRCOLES 14 OCTUBRE',  ['27A','27B','27C','26A','26B']],
+      ['JUEVES 15 OCTUBRE',     ['25A','25B','25C','24A','24B']],
+      ['VIERNES 16 OCTUBRE',    ['23A','23B','23C','22A','22B']]
+    ]},
+    { color:'pink', dias:[
+      ['LUNES 19 OCTUBRE',      ['21A','21B','21C','20A','20B']],
+      ['MARTES 20 OCTUBRE',     ['19A','19B','19C','18A','18B']],
+      ['MIÉRCOLES 21 OCTUBRE',  ['17A','17B','17C','16A','16B']],
+      ['JUEVES 22 OCTUBRE',     ['15A','15B','15C','14A','14B']],
+      ['VIERNES 23 OCTUBRE',    ['13A','13B','13C','12A','12B']]
+    ]},
+    { color:'yellow', dias:[
+      ['LUNES 26 OCTUBRE',      ['11A','11B','AAC','10A','10B']],
+      ['MARTES 27 OCTUBRE',     ['09A','09B','09C','08A','08B']],
+      ['MIÉRCOLES 28 OCTUBRE',  ['07A','07B','07C','06A','06B']],
+      ['JUEVES 29 OCTUBRE',     ['05A','05B','05C','04A','04B']],
+      ['VIERNES 30 OCTUBRE',    ['03A','03B','03C','02A','02B']]
+    ]},
+    { color:'pink', dias:[
+      ['LUNES 02 DE NOVIEMBRE', ['01A','01B','01C','','']]
+    ]}
+  ];
+
+  const TITULO_DEFAULT = 'Cronograma para Sistema Contra Incendio Torre 1';
+
+  /* ============================================================
+     REFERENCIAS
+     ============================================================ */
+  const weeksGrid    = document.getElementById('weeksGrid');
+  const captureArea  = document.getElementById('captureArea');
+  const docTitleEl   = document.getElementById('docTitle');
+  const saveStatusEl = document.getElementById('saveStatus');
+  const ESTADOS      = ['pendiente','atendido','no-atendido'];
+  const ETIQUETA     = {
+    'pendiente'  :'Pendiente',
+    'atendido'   :'Atendido',
+    'no-atendido':'No Atendido'
+  };
+
+  /* ============================================================
+     HELPERS DE CONSTRUCCIÓN
+     ============================================================ */
+  function crearCelda(clase, texto){
+    const td = document.createElement('td');
+    td.className = clase;
+    td.contentEditable = 'true';
+    td.spellcheck = false;
+    td.textContent = texto == null ? '' : String(texto);
+    return td;
+  }
+
+  function crearFila(f){
+    const tr = document.createElement('tr');
+    tr.appendChild(crearCelda('idx-l', f.idxL));
+    const aptTd = crearCelda('apt state', f.apt);
+    aptTd.dataset.state = f.estado || 'pendiente';
+    tr.appendChild(aptTd);
+    tr.appendChild(crearCelda('tower', f.torre));
+    tr.appendChild(crearCelda('idx-r', f.idxR));
+    return tr;
+  }
+
+  function crearDiaCardData(header, filas){
+    const card = document.createElement('article');
+    card.className = 'day-card';
+
+    const h = document.createElement('header');
+    h.className = 'day-header';
+    h.contentEditable = 'true';
+    h.spellcheck = false;
+    h.textContent = header || 'NUEVO DÍA';
+    card.appendChild(h);
+
+    const table = document.createElement('table');
+    table.className = 'day-table';
+
+    for (let i = 0; i < ROWS_PER_DAY; i++){
+      const base = (filas && filas[i]) || {};
+      table.appendChild(crearFila({
+        idxL  : base.idxL  != null ? base.idxL  : String(i+1),
+        apt   : base.apt   != null ? base.apt   : '',
+        estado: base.estado || 'pendiente',
+        torre : base.torre != null ? base.torre : 'T1',
+        idxR  : base.idxR  != null ? base.idxR  : String(i+1)
+      }));
+    }
+    card.appendChild(table);
+    return card;
+  }
+
+  /* ============================================================
+     DATOS POR DEFECTO → formato serializable
+     ============================================================ */
+  function construirDefault(){
+    return {
+      version : SCHEMA_VERSION,
+      titulo  : TITULO_DEFAULT,
+      semanas : CRONOGRAMA_DEFAULT.map(function(sem){
+        return {
+          color: sem.color,
+          dias : sem.dias.map(function(d){
+            return {
+              header: d[0],
+              filas : d[1].map(function(apt, i){
+                return { idxL:String(i+1), apt:apt, estado:'pendiente',
+                         torre:'T1', idxR:String(i+1) };
+              })
+            };
+          })
+        };
+      })
+    };
+  }
+
+  /* ============================================================
+     SERIALIZAR EL DOM ACTUAL → objeto
+     ============================================================ */
+  function serializeState(){
+    const semanas = [];
+    weeksGrid.querySelectorAll('.week-column').forEach(function(col){
+      let color = 'blue';
+      COLOR_CYCLE.forEach(function(c){
+        if (col.classList.contains('color-' + c)) color = c;
+      });
+
+      const dias = [];
+      col.querySelectorAll('.day-card').forEach(function(card){
+        const header = (card.querySelector('.day-header').textContent || '').trim();
+        const filas  = [];
+        card.querySelectorAll('.day-table tr').forEach(function(tr){
+          const tds = tr.querySelectorAll('td');
+          if (tds.length < 4) return;
+          filas.push({
+            idxL  : (tds[0].textContent || '').trim(),
+            apt   : (tds[1].textContent || '').trim(),
+            estado: tds[1].dataset.state || 'pendiente',
+            torre : (tds[2].textContent || '').trim(),
+            idxR  : (tds[3].textContent || '').trim()
+          });
+        });
+        dias.push({ header: header, filas: filas });
+      });
+
+      semanas.push({ color: color, dias: dias });
+    });
+
+    return {
+      version : SCHEMA_VERSION,
+      titulo  : (docTitleEl.textContent || '').trim() || TITULO_DEFAULT,
+      guardado: new Date().toISOString(),
+      semanas : semanas
+    };
+  }
+
+  /* ============================================================
+     RESTAURAR DESDE OBJETO → DOM
+     ============================================================ */
+  function restaurarEstado(data){
+    if (!data || !Array.isArray(data.semanas)) return false;
+
+    docTitleEl.textContent = data.titulo || TITULO_DEFAULT;
+
+    weeksGrid.innerHTML = '';
+    data.semanas.forEach(function(sem){
+      const col = document.createElement('div');
+      col.className = 'week-column color-' + (sem.color || 'blue');
+      (sem.dias || []).forEach(function(d){
+        col.appendChild(crearDiaCardData(d.header, d.filas));
+      });
+      weeksGrid.appendChild(col);
+    });
+    return true;
+  }
+
+  /* ============================================================
+     PERSISTENCIA (localStorage)
+     ============================================================ */
+  let saveTimer = null;
+
+  function mostrarEstado(clase, texto){
+    saveStatusEl.classList.toggle('saving', clase === 'saving');
+    saveStatusEl.textContent = texto;
+  }
+
+  function guardarEstado(){
+    try{
+      const data = serializeState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      const hora = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+      mostrarEstado('saved', '✓ Guardado ' + hora);
+    }catch(err){
+      console.error('Error al guardar:', err);
+      mostrarEstado('saving', '⚠ No se pudo guardar');
+    }
+  }
+
+  function programarGuardado(){
+    mostrarEstado('saving', '● Guardando…');
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(guardarEstado, 450);
+  }
+
+  function cargarEstadoGuardado(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.semanas)) return null;
+      return data;
+    }catch(err){
+      console.error('Error al cargar:', err);
+      return null;
+    }
+  }
+
+  /* ============================================================
+     CICLO DE ESTADO
+     ============================================================ */
+  function cycleState(cell){
+    const actual = cell.dataset.state || 'pendiente';
+    const idx = ESTADOS.indexOf(actual);
+    cell.dataset.state = ESTADOS[(idx + 1) % ESTADOS.length];
+  }
+
+  function limpiarSeleccion(){
+    const sel = window.getSelection && window.getSelection();
+    if (sel && sel.removeAllRanges) sel.removeAllRanges();
+  }
+
+  /* ============================================================
+     DOBLE CLIC (ESCRITORIO)
+     ============================================================ */
+  let lastTouchAction = 0;
+
+  weeksGrid.addEventListener('dblclick', function(e){
+    const cell = e.target.closest('td.apt.state');
+    if (!cell) return;
+    if (Date.now() - lastTouchAction < 700) return;
+
+    e.preventDefault();
+    cycleState(cell);
+    limpiarSeleccion();
+    cell.blur();
+    programarGuardado();          // ← guardar tras cambio de estado
+  });
+
+  /* ============================================================
+     DOBLE TOQUE (MÓVIL / ANDROID)
+     ============================================================ */
+  let lastTapTime = 0;
+  let lastTapCell = null;
+
+  weeksGrid.addEventListener('touchstart', function(e){
+    const cell = e.target.closest('td.apt.state');
+    if (!cell) return;
+
+    const now = Date.now();
+
+    if (lastTapCell === cell && (now - lastTapTime) < 350){
+      e.preventDefault();
+      e.stopPropagation();
+
+      lastTapTime = 0;
+      lastTapCell = null;
+      lastTouchAction = Date.now();
+
+      cycleState(cell);
+      limpiarSeleccion();
+      cell.blur();
+      programarGuardado();        // ← guardar tras cambio de estado
+    } else {
+      lastTapTime = now;
+      lastTapCell = cell;
+    }
+  }, { passive:false });
+
+  /* ============================================================
+     EDICIÓN: Enter sin salto de línea + pegado sin formato
+     ============================================================ */
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && e.target && e.target.isContentEditable){
+      e.preventDefault();
+      e.target.blur();
+    }
+  });
+
+  document.addEventListener('paste', function(e){
+    if (!e.target || !e.target.isContentEditable) return;
+    e.preventDefault();
+    const txt = ((e.clipboardData || window.clipboardData).getData('text/plain') || '')
+      .replace(/\s+/g, ' ').trim();
+    document.execCommand('insertText', false, txt);
+  });
+
+  /* ============================================================
+     AUTOGUARDADO: escuchar ediciones y título
+     ============================================================ */
+  weeksGrid.addEventListener('input', programarGuardado);
+  docTitleEl.addEventListener('input', programarGuardado);
+
+  // Guardado final si cierran pestaña con un cambio pendiente
+  window.addEventListener('beforeunload', function(){
+    if (saveTimer){ clearTimeout(saveTimer); guardarEstado(); }
+  });
+
+  /* ============================================================
+     BOTONES: AGREGAR DÍA / SEMANA
+     ============================================================ */
+  document.getElementById('btnAddDay').addEventListener('click', function(){
+    let lastWeek = weeksGrid.lastElementChild;
+    if (!lastWeek){
+      const col = document.createElement('div');
+      col.className = 'week-column color-' + COLOR_CYCLE[0];
+      col.appendChild(crearDiaCardData('NUEVO DÍA', []));
+      weeksGrid.appendChild(col);
+    } else {
+      lastWeek.appendChild(crearDiaCardData('NUEVO DÍA', []));
+      lastWeek.lastElementChild.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+    programarGuardado();
+  });
+
+  document.getElementById('btnAddWeek').addEventListener('click', function(){
+    const n = weeksGrid.children.length;
+    const color = COLOR_CYCLE[n % COLOR_CYCLE.length];
+    const col = document.createElement('div');
+    col.className = 'week-column color-' + color;
+    col.appendChild(crearDiaCardData('NUEVA SEMANA', []));
+    weeksGrid.appendChild(col);
+    col.scrollIntoView({behavior:'smooth', block:'nearest'});
+    programarGuardado();
+  });
+
+  /* ============================================================
+     UTILIDADES
+     ============================================================ */
+  function limpiarTexto(el){
+    return (el.innerText || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function slugArchivo(t){
+    const base = (t || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .replace(/_{2,}/g, '_')
+      .slice(0, 90);
+    return base || 'cronograma_sistema_contra_incendio';
+  }
+
+  /* ============================================================
+     EXPORTACIÓN A EXCEL (.xlsx)
+     ============================================================ */
+  document.getElementById('btnExport').addEventListener('click', function(){
+    if (typeof XLSX === 'undefined'){
+      alert('No se pudo cargar SheetJS. Verifique su conexión a internet.');
+      return;
+    }
+    try{
+      const titulo = limpiarTexto(docTitleEl) || 'Cronograma';
+      const aoa = [];
+
+      aoa.push([titulo]);
+      aoa.push(['Generado: ' + new Date().toLocaleString('es-ES')]);
+      aoa.push([]);
+      aoa.push(['Semana','Día','#','Apartamento','Torre','Estado']);
+
+      let idxSemana = 0;
+      weeksGrid.querySelectorAll('.week-column').forEach(function(weekCol){
+        idxSemana++;
+        weekCol.querySelectorAll('.day-card').forEach(function(card){
+          const dia = limpiarTexto(card.querySelector('.day-header'));
+          card.querySelectorAll('.day-table tr').forEach(function(tr){
+            const celdas = tr.querySelectorAll('td');
+            if (celdas.length < 4) return;
+
+            const idx       = limpiarTexto(celdas[0]);
+            const aptTd     = celdas[1];
+            const apt       = limpiarTexto(aptTd);
+            const torre     = limpiarTexto(celdas[2]);
+            const estado    = aptTd.dataset.state || 'pendiente';
+            const estadoLbl = ETIQUETA[estado];
+
+            aoa.push([
+              'Semana ' + idxSemana,
+              dia,
+              idx,
+              apt,
+              torre,
+              estadoLbl
+            ]);
+          });
+        });
+      });
+
+      const hoja = XLSX.utils.aoa_to_sheet(aoa);
+      hoja['!cols'] = [
+        { wch: 12 }, { wch: 24 }, { wch: 5 },
+        { wch: 22 }, { wch: 8  }, { wch: 14 }
+      ];
+      hoja['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:5} }];
+
+      const libro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(libro, hoja, 'Cronograma');
+      XLSX.writeFile(libro, slugArchivo(titulo) + '.xlsx');
+
+    }catch(err){
+      console.error(err);
+      alert('Error al exportar: ' + err.message);
+    }
+  });
+
+  /* ============================================================
+     EXPORTACIÓN A IMAGEN (.png)
+     ============================================================ */
+  document.getElementById('btnExportImg').addEventListener('click', async function(){
+    const btn = this;
+    if (typeof html2canvas === 'undefined'){
+      alert('No se pudo cargar html2canvas. Verifique su conexión a internet.');
+      return;
+    }
+
+    const titulo = limpiarTexto(docTitleEl) || 'cronograma';
+    const originalLabel = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Generando…';
+
+    try{
+      await new Promise(r => setTimeout(r, 60));
+
+      const canvas = await html2canvas(captureArea, {
+        backgroundColor: '#eef2f7',
+        scale: Math.min(2, Math.max(1.5, window.devicePixelRatio || 1)),
+        useCORS: true,
+        logging: false,
+        windowWidth: captureArea.scrollWidth,
+        onclone: function(clonedDoc){
+          clonedDoc.querySelectorAll('[contenteditable]:focus')
+            .forEach(el => el.blur && el.blur());
+          const legend = clonedDoc.querySelector('.legend');
+          if (legend) legend.style.boxShadow = 'none';
+        }
+      });
+
+      const link = document.createElement('a');
+      link.download = slugArchivo(titulo) + '.png';
+      link.href = canvas.toDataURL('image/png');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    }catch(err){
+      console.error(err);
+      alert('Error al exportar la imagen: ' + err.message);
+    }finally{
+      btn.disabled = false;
+      btn.innerHTML = originalLabel;
+    }
+  });
+
+  /* ============================================================
+     RESPALDO / RESTAURACIÓN (JSON)
+     ============================================================ */
+  document.getElementById('btnBackup').addEventListener('click', function(){
+    const data = serializeState();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = slugArchivo(data.titulo) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btnRestore').addEventListener('click', function(){
+    document.getElementById('fileRestore').click();
+  });
+
+  document.getElementById('fileRestore').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(){
+      try{
+        const data = JSON.parse(reader.result);
+        if (!data || !Array.isArray(data.semanas)){
+          throw new Error('El archivo no tiene el formato esperado.');
+        }
+        restaurarEstado(data);
+        guardarEstado();
+        alert('✓ Datos restaurados correctamente.');
+      }catch(err){
+        alert('Error al restaurar: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  /* ============================================================
+     REINICIAR
+     ============================================================ */
+  document.getElementById('btnReset').addEventListener('click', function(){
+    if (!confirm('⚠ ¿Seguro que deseas borrar TODOS los datos guardados\ny empezar de cero?\n\nEsta acción no se puede deshacer.')) return;
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    restaurarEstado(construirDefault());
+    guardarEstado();
+    alert('✓ Cronograma reiniciado.');
+  });
+
+  /* ============================================================
+     ARRANQUE
+     ============================================================ */
+  (function init(){
+    const guardado = cargarEstadoGuardado();
+    if (guardado && guardado.semanas.length){
+      restaurarEstado(guardado);
+      const hora = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+      mostrarEstado('saved', '✓ Restaurado ' + hora);
+    } else {
+      restaurarEstado(construirDefault());
+      guardarEstado();
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
