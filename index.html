@@ -89,6 +89,23 @@
   }
   .btn-danger:hover{background:rgba(255,44,44,.38);}
   .btn[disabled]{opacity:.6; cursor:wait;}
+  .btn-import{
+    background:#6C5CE7; color:#fff;
+    box-shadow:0 6px 14px rgba(108,92,231,.35);
+  }
+  .btn-import:hover{background:#7d6ef0;}
+  .btn-soft{background:#e8eef5; color:#33475b;}
+  .btn-soft:hover{background:#dbe5f0;}
+
+  /* Selector de torre */
+  .tower-select{
+    background:rgba(255,255,255,.14); color:#fff;
+    border:1px solid rgba(255,255,255,.30);
+    border-radius:9px; padding:8px 10px;
+    font-family:inherit; font-size:12.5px; font-weight:700;
+    max-width:170px; cursor:pointer;
+  }
+  .tower-select option{color:#0f1d2b; background:#fff;}
 
   /* Indicador de guardado */
   .save-status{
@@ -286,6 +303,94 @@
     user-select:text;
   }
 
+  /* ============ MODAL IMPORTAR ============ */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(10,20,35,.55);
+    display:flex; align-items:center; justify-content:center;
+    padding:12px;
+  }
+  .modal-overlay[hidden]{display:none;}
+  .modal{
+    background:#fff; border-radius:12px;
+    width:min(780px,96vw); max-height:92vh;
+    display:flex; flex-direction:column;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    overflow:hidden;
+  }
+  .modal-head{
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));
+    color:#fff; padding:12px 16px; font-weight:800;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .modal-x{
+    background:rgba(255,255,255,.15); border:0; color:#fff;
+    width:30px; height:30px; border-radius:8px;
+    cursor:pointer; font-size:14px;
+  }
+  .modal-x:hover{background:rgba(255,255,255,.3);}
+  .modal-body{padding:14px 16px; overflow:auto;}
+  .imp-tabs{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .imp-tab{
+    border:1px solid var(--line); background:#f4f7fb; color:#33475b;
+    border-radius:8px; padding:8px 10px;
+    font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .imp-tab.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .imp-hint{font-size:12.5px; color:#55677c; margin:6px 0 10px;}
+  .imp-ejemplo{
+    background:#f4f7fb; border:1px solid var(--line); border-radius:8px;
+    padding:8px 10px; font-size:11.5px; overflow:auto; margin:0 0 10px;
+  }
+  #impTextarea{
+    width:100%; height:150px; resize:vertical;
+    border:1px solid var(--line); border-radius:8px; padding:10px;
+    font-family:Consolas,Menlo,monospace; font-size:12.5px; margin-bottom:10px;
+  }
+  .imp-progress{margin-top:12px;}
+  .imp-progress-label{font-size:12px; font-weight:700; color:#33475b; margin-bottom:5px;}
+  .imp-bar{height:8px; background:#e8eef5; border-radius:6px; overflow:hidden;}
+  .imp-bar-fill{height:100%; width:0%; background:var(--accent); transition:width .2s;}
+  .imp-summary{
+    background:#e9f7ef; border:1px solid #bfe6cf; color:#1c6b3c;
+    font-weight:700; font-size:13px; border-radius:8px;
+    padding:9px 12px; margin-bottom:12px;
+  }
+  .imp-fields{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px;}
+  .imp-fields label{
+    flex:1 1 240px; font-size:12px; font-weight:700; color:#33475b;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .imp-fields input{
+    border:1px solid var(--line); border-radius:8px; padding:8px 10px;
+    font-family:inherit; font-size:13px;
+  }
+  #impPorCol{max-width:90px;}
+  .imp-target{display:flex; flex-direction:column; gap:6px; font-size:12.5px; color:#33475b; margin-bottom:10px;}
+  .imp-target label{display:flex; gap:6px; align-items:center; font-weight:600;}
+  .imp-preview-wrap{max-height:40vh; overflow:auto; border:1px solid var(--line); border-radius:8px;}
+  .imp-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .imp-table td{border-bottom:1px solid var(--line); padding:4px;}
+  .imp-table td:first-child{width:34%;}
+  .imp-table td:last-child{width:34px; text-align:center;}
+  .imp-table input{
+    width:100%; border:1px solid transparent; border-radius:6px; padding:6px;
+    font-family:inherit; font-size:12.5px; background:transparent;
+  }
+  .imp-table input:focus{border-color:var(--accent); background:#fff; outline:none;}
+  .imp-in-dia{font-weight:700; color:var(--navy);}
+  .imp-del{
+    border:0; background:#fdeaea; color:#c0392b; border-radius:6px;
+    width:26px; height:26px; cursor:pointer; font-weight:700;
+  }
+  .imp-del:hover{background:#f8cfcf;}
+  #impRawWrap{margin-top:10px; font-size:12px; color:#55677c;}
+  #impRaw{
+    white-space:pre-wrap; background:#f4f7fb; border-radius:8px; padding:8px;
+    max-height:150px; overflow:auto; font-size:11px;
+  }
+  .imp-actions{display:flex; justify-content:space-between; gap:10px; margin-top:14px;}
+
   /* ============ RESPONSIVE ============ */
   @media (max-width:600px){
     .wrap{padding:10px 10px 50px;}
@@ -298,10 +403,14 @@
     .day-table .apt{font-size:16px; font-weight:800;}
     .day-table .tower{font-size:14px;}
     .day-header{font-size:13px; padding:8px;}
+    .imp-fields label{flex:1 1 100%;}
+    .modal-body{padding:12px;}
+    .tower-select{max-width:130px; font-size:11.5px; padding:7px 8px;}
   }
 
   @media print{
     .topbar{display:none;}
+    .modal-overlay{display:none !important;}
     body{background:#fff;}
     .weeks-grid{grid-template-columns:repeat(4, 1fr);}
     .day-card{break-inside:avoid;}
@@ -324,10 +433,16 @@
     <div class="actions">
       <span class="save-status" id="saveStatus">✓ Guardado</span>
 
+      <select id="towerSelect" class="tower-select" title="Torre activa"></select>
+      <button type="button" class="btn btn-ghost" id="btnAddTower" title="Crear una torre vacía">➕ Torre</button>
+      <button type="button" class="btn btn-ghost" id="btnDelTower" title="Eliminar la torre actual">🗑 Torre</button>
+
       <button type="button" class="btn btn-ghost" id="btnAddWeek">➕ Semana</button>
       <button type="button" class="btn btn-ghost" id="btnAddDay">➕ Día</button>
 
-      <button type="button" class="btn btn-ghost" id="btnBackup" title="Descargar respaldo .json">💾 Respaldar</button>
+      <button type="button" class="btn btn-import" id="btnImport" title="Importar desde texto, Excel, imagen o PDF">📤 Importar</button>
+
+      <button type="button" class="btn btn-ghost" id="btnBackup" title="Descargar respaldo .json de TODAS las torres">💾 Respaldar</button>
       <button type="button" class="btn btn-ghost" id="btnRestore" title="Cargar respaldo .json">📂 Restaurar</button>
       <input type="file" id="fileRestore" accept=".json,application/json" hidden>
 
@@ -351,6 +466,7 @@
     <span class="chip"><span class="dot att"></span> Atendido</span>
     <span class="chip"><span class="dot no"></span> No Atendido</span>
     <span class="sep"></span>
+    <span>📤 <strong>Importar</strong> = arma el cronograma desde texto, Excel, foto o PDF</span>
     <span>💾 Los cambios se guardan solos.</span>
   </section>
 
@@ -364,6 +480,87 @@
 
 </main>
 
+<!-- ===================== MODAL IMPORTAR ===================== -->
+<div class="modal-overlay" id="importModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <header class="modal-head">
+      <span>📤 Importar cronograma</span>
+      <button type="button" class="modal-x" id="impClose" title="Cerrar">✕</button>
+    </header>
+    <div class="modal-body">
+
+      <!-- Paso 1: elegir origen -->
+      <div id="impStepSource">
+        <div class="imp-tabs">
+          <button type="button" class="imp-tab active" data-tab="texto">📋 Pegar texto</button>
+          <button type="button" class="imp-tab" data-tab="excel">📗 Excel / CSV</button>
+          <button type="button" class="imp-tab" data-tab="imagen">📸 Imagen</button>
+          <button type="button" class="imp-tab" data-tab="pdf">📄 PDF</button>
+        </div>
+
+        <div class="imp-pane" id="pane-texto">
+          <p class="imp-hint">Pega la tabla copiada desde Excel (tal cual, con sus columnas), o usa este formato sencillo (un día por línea):</p>
+          <pre class="imp-ejemplo">TORRE 2
+LUNES 16 NOVIEMBRE | 43C-PH, 41-42A-PH, 41-42B-PH, 40A, 40B
+MARTES 17 NOVIEMBRE | 39A, 39B, 39C, 38A, 38B</pre>
+          <textarea id="impTextarea" spellcheck="false" placeholder="Pega aquí…"></textarea>
+          <button type="button" class="btn btn-primary" id="impAnalizar">🔎 Analizar texto</button>
+        </div>
+
+        <div class="imp-pane" id="pane-excel" hidden>
+          <p class="imp-hint">Sirve el Excel con el cuadro como la imagen (columnas de días) o el Excel exportado por esta app (columnas Día / Apartamento / Estado — así también recuperas los estados).</p>
+          <button type="button" class="btn btn-image" id="impBtnExcel">📗 Elegir archivo .xlsx / .xls / .csv</button>
+          <input type="file" id="impFileExcel" accept=".xlsx,.xls,.csv" hidden>
+        </div>
+
+        <div class="imp-pane" id="pane-imagen" hidden>
+          <p class="imp-hint">Foto o captura del cuadro. Se lee con OCR en tu navegador (requiere internet la primera vez y tarda unos segundos). Siempre podrás revisar y corregir antes de crear nada.</p>
+          <button type="button" class="btn btn-image" id="impBtnImg">📸 Elegir imagen</button>
+          <input type="file" id="impFileImg" accept="image/*" hidden>
+        </div>
+
+        <div class="imp-pane" id="pane-pdf" hidden>
+          <p class="imp-hint">Un PDF con texto (exportado de Excel/Word) se lee exacto. Si es escaneado, se intenta leer como imagen (OCR).</p>
+          <button type="button" class="btn btn-image" id="impBtnPdf">📄 Elegir PDF</button>
+          <input type="file" id="impFilePdf" accept=".pdf,application/pdf" hidden>
+        </div>
+
+        <div class="imp-progress" id="impProgress" hidden>
+          <div class="imp-progress-label" id="impProgressLabel">Procesando…</div>
+          <div class="imp-bar"><div class="imp-bar-fill" id="impBarFill"></div></div>
+        </div>
+      </div>
+
+      <!-- Paso 2: revisar y confirmar -->
+      <div id="impStepPreview" hidden>
+        <div class="imp-summary" id="impSummary"></div>
+        <div class="imp-fields">
+          <label>Título del cronograma
+            <input type="text" id="impTitulo">
+          </label>
+          <label>Días por columna
+            <input type="number" id="impPorCol" min="1" max="10" value="6">
+          </label>
+        </div>
+        <div class="imp-target">
+          <label><input type="radio" name="impTarget" value="nueva" checked> ➕ Crear una torre nueva</label>
+          <label><input type="radio" name="impTarget" value="reemplazar"> ♻️ Reemplazar la torre actual (<span id="impTargetName"></span>) — se pierde su avance</label>
+        </div>
+        <p class="imp-hint">Revisa y corrige lo detectado (apartamentos separados por comas). Con ✕ quitas un día:</p>
+        <div class="imp-preview-wrap">
+          <table class="imp-table" id="impTable"></table>
+        </div>
+        <details id="impRawWrap" hidden><summary>Ver texto detectado (avanzado)</summary><pre id="impRaw"></pre></details>
+        <div class="imp-actions">
+          <button type="button" class="btn btn-soft" id="impBack">⬅ Volver</button>
+          <button type="button" class="btn btn-primary" id="impApply">✅ Crear cronograma</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   'use strict';
@@ -373,10 +570,11 @@
      ============================================================ */
   const ROWS_PER_DAY   = 5;
   const COLOR_CYCLE    = ['blue','green','pink','yellow'];
-  const STORAGE_KEY    = 'cronograma_contra_incendio_v1';
-  const SCHEMA_VERSION = 1;
+  const STORAGE_KEY    = 'cronograma_contra_incendio_v1';   // formato antiguo (1 torre)
+  const STORAGE_KEY_V2 = 'cronograma_contra_incendio_v2';   // formato nuevo (varias torres)
+  const SCHEMA_VERSION = 2;
 
-  // Datos por defecto (solo se usan la primera vez)
+  // Datos por defecto Torre 1 (solo se usan la primera vez)
   const CRONOGRAMA_DEFAULT = [
     { color:'blue', dias:[
       ['LUNES 05 OCTUBRE',      ['43C-PH','41-42A-PH','41-42B-PH','40A','40B']],
@@ -411,6 +609,31 @@
     ]}
   ];
 
+  // Torre 2 transcrita del cuadro adjunto (16 nov → 14 dic, 21 días, 103 aptos)
+  const TORRE2_DIAS = [
+    ['LUNES 16 NOVIEMBRE',      ['43C-PH','41-42A-PH','41-42B-PH','40A','40B']],
+    ['MARTES 17 NOVIEMBRE',     ['39A','39B','39C','38A','38B']],
+    ['MIÉRCOLES 18 NOVIEMBRE',  ['37A','37B','37C','36A','36B']],
+    ['JUEVES 19 NOVIEMBRE',     ['35A','35B','35C','34A','34B']],
+    ['VIERNES 20 NOVIEMBRE',    ['33A','33B','33C','32A','32B']],
+    ['LUNES 23 NOVIEMBRE',      ['31A','31B','31C','30A','30B']],
+    ['MARTES 24 NOVIEMBRE',     ['29A','29B','29C','28A','28B']],
+    ['MIÉRCOLES 25 NOVIEMBRE',  ['27A','27B','27C','26A','26B']],
+    ['JUEVES 26 NOVIEMBRE',     ['25A','25B','25C','24A','24B']],
+    ['VIERNES 27 NOVIEMBRE',    ['23A','23B','23C','22A','22B']],
+    ['LUNES 30 NOVIEMBRE',      ['21A','21B','21C','20A','20B']],
+    ['MARTES 01 DICIEMBRE',     ['19A','19B','19C','18A','18B']],
+    ['MIÉRCOLES 02 DICIEMBRE',  ['17A','17B','17C','16A','16B']],
+    ['JUEVES 03 DICIEMBRE',     ['15A','15B','15C','14A','14B']],
+    ['VIERNES 04 DICIEMBRE',    ['13A','13B','13C','12A','12B']],
+    ['LUNES 07 DICIEMBRE',      ['11A','11B','AAC','10A','10B']],
+    ['MARTES 08 DICIEMBRE',     ['09A','09B','09C','08A','08B']],
+    ['MIÉRCOLES 09 DICIEMBRE',  ['07A','07B','07C','06A','06B']],
+    ['JUEVES 10 DICIEMBRE',     ['05A','05B','05C','04A','04B']],
+    ['VIERNES 11 DICIEMBRE',    ['03A','03B','03C','02A','02B']],
+    ['LUNES 14 DICIEMBRE',      ['01A','01B','01C']]
+  ];
+
   const TITULO_DEFAULT = 'Cronograma para Sistema Contra Incendio Torre 1';
 
   /* ============================================================
@@ -420,12 +643,15 @@
   const captureArea  = document.getElementById('captureArea');
   const docTitleEl   = document.getElementById('docTitle');
   const saveStatusEl = document.getElementById('saveStatus');
+  const towerSelect  = document.getElementById('towerSelect');
   const ESTADOS      = ['pendiente','atendido','no-atendido'];
   const ETIQUETA     = {
     'pendiente'  :'Pendiente',
     'atendido'   :'Atendido',
     'no-atendido':'No Atendido'
   };
+
+  let appState = null;   // { version, torreActiva, torres:[{id,titulo,semanas}] }
 
   /* ============================================================
      HELPERS DE CONSTRUCCIÓN
@@ -464,7 +690,8 @@
     const table = document.createElement('table');
     table.className = 'day-table';
 
-    for (let i = 0; i < ROWS_PER_DAY; i++){
+    const n = Math.max(ROWS_PER_DAY, filas ? filas.length : 0);
+    for (let i = 0; i < n; i++){
       const base = (filas && filas[i]) || {};
       table.appendChild(crearFila({
         idxL  : base.idxL  != null ? base.idxL  : String(i+1),
@@ -476,6 +703,10 @@
     }
     card.appendChild(table);
     return card;
+  }
+
+  function uid(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
   }
 
   /* ============================================================
@@ -502,8 +733,59 @@
     };
   }
 
+  // Lista de días → semanas (columnas). Usado por Torre 2 y por el importador.
+  function semanasDesdeLista(dias, porCol, torreLabel, grupos){
+    const chunks = [];
+    if (grupos){
+      let cur = null, prev = null;
+      dias.forEach(function(d, i){
+        const g = grupos[i] || '';
+        if (!cur || g !== prev){ cur = []; chunks.push(cur); prev = g; }
+        cur.push(d);
+      });
+    } else {
+      for (let i = 0; i < dias.length; i += porCol) chunks.push(dias.slice(i, i + porCol));
+    }
+    return chunks.map(function(ch, ci){
+      return {
+        color: COLOR_CYCLE[ci % COLOR_CYCLE.length],
+        dias : ch.map(function(d){
+          return {
+            header: d.header,
+            filas : d.apts.map(function(a, i){
+              return {
+                idxL  : String(i+1),
+                apt   : a,
+                estado: (d.estados && d.estados[i]) || 'pendiente',
+                torre : d.torre || torreLabel || 'T1',
+                idxR  : String(i+1)
+              };
+            })
+          };
+        })
+      };
+    });
+  }
+
+  function construirTorre2(){
+    return {
+      id     : uid(),
+      titulo : 'Cronograma para Sistema Contra Incendio Torre 2',
+      semanas: semanasDesdeLista(
+        TORRE2_DIAS.map(function(d){ return {header:d[0], apts:d[1]}; }),
+        6, 'T2', null
+      )
+    };
+  }
+
+  function estadoFabrica(){
+    const t1 = { id:uid(), titulo:TITULO_DEFAULT, semanas:construirDefault().semanas };
+    const t2 = construirTorre2();
+    return { version:SCHEMA_VERSION, torreActiva:t1.id, torres:[t1, t2] };
+  }
+
   /* ============================================================
-     SERIALIZAR EL DOM ACTUAL → objeto
+     SERIALIZAR EL DOM ACTUAL → objeto (torre activa)
      ============================================================ */
   function serializeState(){
     const semanas = [];
@@ -563,6 +845,85 @@
   }
 
   /* ============================================================
+     MULTI-TORRE
+     ============================================================ */
+  function getActiva(){
+    return appState.torres.find(function(t){ return t.id === appState.torreActiva; })
+           || appState.torres[0];
+  }
+
+  function syncActiva(){
+    const t = getActiva();
+    if (!t) return;
+    const s = serializeState();
+    t.titulo   = s.titulo;
+    t.semanas  = s.semanas;
+    t.guardado = s.guardado;
+  }
+
+  function nombreCorto(titulo){
+    const m = String(titulo || '').match(/torre\s+[0-9a-záéíóúñ-]+/i);
+    if (m) return m[0].replace(/\s+/g,' ').replace(/^torre/i,'Torre');
+    return String(titulo || 'Torre').slice(0, 24);
+  }
+
+  function rebuildTowerSelect(){
+    towerSelect.innerHTML = '';
+    appState.torres.forEach(function(t){
+      const op = document.createElement('option');
+      op.value = t.id;
+      op.textContent = nombreCorto(t.titulo);
+      towerSelect.appendChild(op);
+    });
+    towerSelect.value = appState.torreActiva;
+  }
+
+  function activarTorre(id){
+    syncActiva();
+    appState.torreActiva = id;
+    restaurarEstado(getActiva());
+    guardarEstado();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function cargarApp(){
+    // 1) ¿Ya existe el formato nuevo?
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY_V2);
+      if (raw){
+        const d = JSON.parse(raw);
+        if (d && Array.isArray(d.torres) && d.torres.length){
+          d.torres.forEach(function(t){
+            t.id = t.id || uid();
+            t.titulo = t.titulo || TITULO_DEFAULT;
+            t.semanas = Array.isArray(t.semanas) ? t.semanas : [];
+          });
+          if (!d.torres.some(function(t){ return t.id === d.torreActiva; })){
+            d.torreActiva = d.torres[0].id;
+          }
+          d.version = SCHEMA_VERSION;
+          return d;
+        }
+      }
+    }catch(err){ console.error('Error al cargar v2:', err); }
+
+    // 2) Migración: datos antiguos (1 torre) → Torre 1 + Torre 2 precargada
+    try{
+      const raw1 = localStorage.getItem(STORAGE_KEY);
+      if (raw1){
+        const d1 = JSON.parse(raw1);
+        if (d1 && Array.isArray(d1.semanas) && d1.semanas.length){
+          const t1 = { id:uid(), titulo:d1.titulo || TITULO_DEFAULT, semanas:d1.semanas };
+          return { version:SCHEMA_VERSION, torreActiva:t1.id, torres:[t1, construirTorre2()] };
+        }
+      }
+    }catch(err){ console.error('Error al migrar v1:', err); }
+
+    // 3) Primera vez
+    return estadoFabrica();
+  }
+
+  /* ============================================================
      PERSISTENCIA (localStorage)
      ============================================================ */
   let saveTimer = null;
@@ -574,8 +935,10 @@
 
   function guardarEstado(){
     try{
-      const data = serializeState();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      syncActiva();
+      appState.guardado = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(appState));
+      rebuildTowerSelect();
       const hora = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
       mostrarEstado('saved', '✓ Guardado ' + hora);
     }catch(err){
@@ -588,19 +951,6 @@
     mostrarEstado('saving', '● Guardando…');
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(guardarEstado, 450);
-  }
-
-  function cargarEstadoGuardado(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      const data = JSON.parse(raw);
-      if (!data || !Array.isArray(data.semanas)) return null;
-      return data;
-    }catch(err){
-      console.error('Error al cargar:', err);
-      return null;
-    }
   }
 
   /* ============================================================
@@ -631,7 +981,7 @@
     cycleState(cell);
     limpiarSeleccion();
     cell.blur();
-    programarGuardado();          // ← guardar tras cambio de estado
+    programarGuardado();
   });
 
   /* ============================================================
@@ -657,7 +1007,7 @@
       cycleState(cell);
       limpiarSeleccion();
       cell.blur();
-      programarGuardado();        // ← guardar tras cambio de estado
+      programarGuardado();
     } else {
       lastTapTime = now;
       lastTapCell = cell;
@@ -672,6 +1022,7 @@
       e.preventDefault();
       e.target.blur();
     }
+    if (e.key === 'Escape' && !importModal.hidden) cerrarImport();
   });
 
   document.addEventListener('paste', function(e){
@@ -683,12 +1034,11 @@
   });
 
   /* ============================================================
-     AUTOGUARDADO: escuchar ediciones y título
+     AUTOGUARDADO
      ============================================================ */
   weeksGrid.addEventListener('input', programarGuardado);
   docTitleEl.addEventListener('input', programarGuardado);
 
-  // Guardado final si cierran pestaña con un cambio pendiente
   window.addEventListener('beforeunload', function(){
     if (saveTimer){ clearTimeout(saveTimer); guardarEstado(); }
   });
@@ -722,6 +1072,42 @@
   });
 
   /* ============================================================
+     BOTONES: TORRES
+     ============================================================ */
+  towerSelect.addEventListener('change', function(){
+    activarTorre(this.value);
+  });
+
+  document.getElementById('btnAddTower').addEventListener('click', function(){
+    const nombre = prompt('Nombre de la nueva torre:', 'Torre ' + (appState.torres.length + 1));
+    if (nombre == null) return;
+    const n = nombre.trim() || ('Torre ' + (appState.torres.length + 1));
+    const t = {
+      id     : uid(),
+      titulo : 'Cronograma para Sistema Contra Incendio ' + n,
+      semanas: [{ color:'blue', dias:[{ header:'NUEVO DÍA', filas:[] }] }]
+    };
+    syncActiva();
+    appState.torres.push(t);
+    appState.torreActiva = t.id;
+    restaurarEstado(t);
+    guardarEstado();
+  });
+
+  document.getElementById('btnDelTower').addEventListener('click', function(){
+    if (appState.torres.length <= 1){
+      alert('Debe existir al menos una torre.');
+      return;
+    }
+    const t = getActiva();
+    if (!confirm('¿Eliminar "' + nombreCorto(t.titulo) + '" y todo su avance?\nEsta acción no se puede deshacer.')) return;
+    appState.torres = appState.torres.filter(function(x){ return x.id !== t.id; });
+    appState.torreActiva = appState.torres[0].id;
+    restaurarEstado(getActiva());
+    guardarEstado();
+  });
+
+  /* ============================================================
      UTILIDADES
      ============================================================ */
   function limpiarTexto(el){
@@ -729,6 +1115,10 @@
       .replace(/\u00a0/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+  }
+
+  function norm(t){
+    return String(t == null ? '' : t).replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();
   }
 
   function slugArchivo(t){
@@ -743,7 +1133,7 @@
   }
 
   /* ============================================================
-     EXPORTACIÓN A EXCEL (.xlsx)
+     EXPORTACIÓN A EXCEL (.xlsx) — una hoja por torre
      ============================================================ */
   document.getElementById('btnExport').addEventListener('click', function(){
     if (typeof XLSX === 'undefined'){
@@ -751,52 +1141,48 @@
       return;
     }
     try{
-      const titulo = limpiarTexto(docTitleEl) || 'Cronograma';
-      const aoa = [];
+      syncActiva();
+      const libro = XLSX.utils.book_new();
 
-      aoa.push([titulo]);
-      aoa.push(['Generado: ' + new Date().toLocaleString('es-ES')]);
-      aoa.push([]);
-      aoa.push(['Semana','Día','#','Apartamento','Torre','Estado']);
+      appState.torres.forEach(function(t, ti){
+        const aoa = [];
+        aoa.push([t.titulo]);
+        aoa.push(['Generado: ' + new Date().toLocaleString('es-ES')]);
+        aoa.push([]);
+        aoa.push(['Semana','Día','#','Apartamento','Torre','Estado']);
 
-      let idxSemana = 0;
-      weeksGrid.querySelectorAll('.week-column').forEach(function(weekCol){
-        idxSemana++;
-        weekCol.querySelectorAll('.day-card').forEach(function(card){
-          const dia = limpiarTexto(card.querySelector('.day-header'));
-          card.querySelectorAll('.day-table tr').forEach(function(tr){
-            const celdas = tr.querySelectorAll('td');
-            if (celdas.length < 4) return;
-
-            const idx       = limpiarTexto(celdas[0]);
-            const aptTd     = celdas[1];
-            const apt       = limpiarTexto(aptTd);
-            const torre     = limpiarTexto(celdas[2]);
-            const estado    = aptTd.dataset.state || 'pendiente';
-            const estadoLbl = ETIQUETA[estado];
-
-            aoa.push([
-              'Semana ' + idxSemana,
-              dia,
-              idx,
-              apt,
-              torre,
-              estadoLbl
-            ]);
+        (t.semanas || []).forEach(function(sem, si){
+          (sem.dias || []).forEach(function(d){
+            (d.filas || []).forEach(function(f){
+              aoa.push([
+                'Semana ' + (si+1),
+                d.header,
+                f.idxL,
+                f.apt,
+                f.torre,
+                ETIQUETA[f.estado] || 'Pendiente'
+              ]);
+            });
           });
         });
+
+        const hoja = XLSX.utils.aoa_to_sheet(aoa);
+        hoja['!cols'] = [
+          { wch: 12 }, { wch: 24 }, { wch: 5 },
+          { wch: 22 }, { wch: 8  }, { wch: 14 }
+        ];
+        hoja['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:5} }];
+
+        let nombre = nombreCorto(t.titulo).replace(/[\[\]\:\*\?\/\\]/g,'').slice(0,31) || ('Torre ' + (ti+1));
+        let base = nombre, k = 2;
+        while (libro.SheetNames.indexOf(nombre) >= 0){ nombre = base.slice(0,28) + ' ' + k; k++; }
+        XLSX.utils.book_append_sheet(libro, hoja, nombre);
       });
 
-      const hoja = XLSX.utils.aoa_to_sheet(aoa);
-      hoja['!cols'] = [
-        { wch: 12 }, { wch: 24 }, { wch: 5 },
-        { wch: 22 }, { wch: 8  }, { wch: 14 }
-      ];
-      hoja['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:5} }];
-
-      const libro = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(libro, hoja, 'Cronograma');
-      XLSX.writeFile(libro, slugArchivo(titulo) + '.xlsx');
+      const archivo = appState.torres.length === 1
+        ? slugArchivo(appState.torres[0].titulo) + '.xlsx'
+        : 'cronogramas_torres.xlsx';
+      XLSX.writeFile(libro, archivo);
 
     }catch(err){
       console.error(err);
@@ -805,7 +1191,7 @@
   });
 
   /* ============================================================
-     EXPORTACIÓN A IMAGEN (.png)
+     EXPORTACIÓN A IMAGEN (.png) — torre activa
      ============================================================ */
   document.getElementById('btnExportImg').addEventListener('click', async function(){
     const btn = this;
@@ -853,15 +1239,15 @@
   });
 
   /* ============================================================
-     RESPALDO / RESTAURACIÓN (JSON)
+     RESPALDO / RESTAURACIÓN (JSON) — todas las torres
      ============================================================ */
   document.getElementById('btnBackup').addEventListener('click', function(){
-    const data = serializeState();
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    syncActiva();
+    const blob = new Blob([JSON.stringify(appState, null, 2)], {type:'application/json'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = slugArchivo(data.titulo) + '.json';
+    a.download = 'respaldo_cronogramas_torres.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -880,12 +1266,34 @@
     reader.onload = function(){
       try{
         const data = JSON.parse(reader.result);
-        if (!data || !Array.isArray(data.semanas)){
+        let nuevo = null;
+
+        if (data && Array.isArray(data.torres) && data.torres.length){
+          nuevo = data;                                   // respaldo nuevo (varias torres)
+        } else if (data && Array.isArray(data.semanas)){  // respaldo antiguo (1 torre)
+          nuevo = { version:SCHEMA_VERSION, torreActiva:null,
+                    torres:[{ id:uid(), titulo:data.titulo || TITULO_DEFAULT, semanas:data.semanas }] };
+        } else {
           throw new Error('El archivo no tiene el formato esperado.');
         }
-        restaurarEstado(data);
+
+        if (!confirm('Esto reemplazará las ' + appState.torres.length + ' torre(s) actuales por las '
+                     + nuevo.torres.length + ' del respaldo. ¿Continuar?')) return;
+
+        nuevo.torres.forEach(function(t){
+          t.id = t.id || uid();
+          t.titulo = t.titulo || TITULO_DEFAULT;
+          t.semanas = Array.isArray(t.semanas) ? t.semanas : [];
+        });
+        nuevo.version = SCHEMA_VERSION;
+        if (!nuevo.torres.some(function(t){ return t.id === nuevo.torreActiva; })){
+          nuevo.torreActiva = nuevo.torres[0].id;
+        }
+
+        appState = nuevo;
+        restaurarEstado(getActiva());
         guardarEstado();
-        alert('✓ Datos restaurados correctamente.');
+        alert('✓ Respaldo restaurado (' + appState.torres.length + ' torres).');
       }catch(err){
         alert('Error al restaurar: ' + err.message);
       }
@@ -898,26 +1306,654 @@
      REINICIAR
      ============================================================ */
   document.getElementById('btnReset').addEventListener('click', function(){
-    if (!confirm('⚠ ¿Seguro que deseas borrar TODOS los datos guardados\ny empezar de cero?\n\nEsta acción no se puede deshacer.')) return;
-    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-    restaurarEstado(construirDefault());
+    if (!confirm('⚠ ¿Seguro que deseas borrar TODAS las torres y su avance,\ny volver al estado inicial (Torre 1 y Torre 2 de ejemplo)?\n\nEsta acción no se puede deshacer.')) return;
+    try{
+      localStorage.removeItem(STORAGE_KEY_V2);
+      localStorage.removeItem(STORAGE_KEY);
+    }catch(e){}
+    appState = estadoFabrica();
+    restaurarEstado(getActiva());
     guardarEstado();
-    alert('✓ Cronograma reiniciado.');
+    alert('✓ Cronogramas reiniciados.');
+  });
+
+  /* ============================================================
+     IMPORTADOR (texto / Excel / imagen / PDF)
+     ============================================================ */
+  const importModal   = document.getElementById('importModal');
+  const impStepSource = document.getElementById('impStepSource');
+  const impStepPrev   = document.getElementById('impStepPreview');
+  const impTextarea   = document.getElementById('impTextarea');
+  const impProgress   = document.getElementById('impProgress');
+  const impProgLabel  = document.getElementById('impProgressLabel');
+  const impBarFill    = document.getElementById('impBarFill');
+  const impSummary    = document.getElementById('impSummary');
+  const impTitulo     = document.getElementById('impTitulo');
+  const impPorCol     = document.getElementById('impPorCol');
+  const impTargetName = document.getElementById('impTargetName');
+  const impTable      = document.getElementById('impTable');
+  const impRawWrap    = document.getElementById('impRawWrap');
+  const impRaw        = document.getElementById('impRaw');
+  let   impRes        = null;
+
+  const RE_DIA   = /^(LUNES|MARTES|MI[ÉE]RCOLES|JUEVES|VIERNES|S[ÁA]BADO|DOMINGO)\b/i;
+  const RE_MES   = /^(ENERO|FEBRERO|MARZO|ABRIL|MAYO|JUNIO|JULIO|AGOSTO|SEPTIEMBRE|SETIEMBRE|OCTUBRE|NOVIEMBRE|DICIEMBRE|DE|DEL)$/i;
+  const RE_TORRE = /^T\s*-?\s*\d+$/i;
+  const RE_NUM   = /^\d+$/;
+
+  function impProg(ver, label, pct){
+    impProgress.hidden = !ver;
+    if (label != null) impProgLabel.textContent = label;
+    impBarFill.style.width = Math.max(0, Math.min(100, pct || 0)) + '%';
+  }
+
+  function impTab(name){
+    document.querySelectorAll('.imp-tab').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab === name);
+    });
+    ['texto','excel','imagen','pdf'].forEach(function(n){
+      document.getElementById('pane-' + n).hidden = (n !== name);
+    });
+  }
+
+  function cerrarImport(){
+    importModal.hidden = true;
+    impProg(false);
+    impStepPrev.hidden = true;
+    impStepSource.hidden = false;
+  }
+
+  document.getElementById('btnImport').addEventListener('click', function(){
+    impStepPrev.hidden = true;
+    impStepSource.hidden = false;
+    impProg(false);
+    importModal.hidden = false;
+  });
+  document.getElementById('impClose').addEventListener('click', cerrarImport);
+  importModal.addEventListener('click', function(e){ if (e.target === importModal) cerrarImport(); });
+  document.querySelectorAll('.imp-tab').forEach(function(b){
+    b.addEventListener('click', function(){ impTab(this.dataset.tab); });
+  });
+  document.getElementById('impBack').addEventListener('click', function(){
+    impStepPrev.hidden = true;
+    impStepSource.hidden = false;
+  });
+
+  /* ---------- Parser 1: texto simple "DÍA | apto, apto, ..." ---------- */
+  function parseTexto(txt){
+    const dias = []; let torre = null;
+    String(txt || '').split(/\r?\n/).forEach(function(ln){
+      ln = norm(ln);
+      if (!ln) return;
+      const mt = ln.match(/torre\s+([0-9]+[a-z]?)/i);
+      if (mt && !RE_DIA.test(ln) && ln.indexOf('|') < 0 && ln.length < 40){
+        torre = 'T' + mt[1].toUpperCase();
+        return;
+      }
+      let sep = ln.indexOf('|');
+      if (sep < 0) sep = ln.indexOf(':');
+      if (sep < 0) sep = ln.indexOf('\t');
+      if (sep < 0) return;
+      const izq = norm(ln.slice(0, sep)), der = norm(ln.slice(sep + 1));
+      if (!RE_DIA.test(izq)) return;
+      const apts = der.split(/[,;]+/).map(norm).filter(Boolean);
+      dias.push({ header: izq.toUpperCase(), apts: apts });
+    });
+    return { dias: dias, torre: torre, grupos: null };
+  }
+
+  /* ---------- Parser 2: matriz (TSV pegado o Excel) ---------- */
+  function parseMatriz(rows){
+    rows = (rows || []).map(function(r){ return (r || []).map(norm); });
+
+    // 2a) Formato lista (export de esta app): Día / Apartamento / Estado…
+    let hRow = -1, cols = null;
+    for (let r = 0; r < Math.min(rows.length, 15); r++){
+      const cells = rows[r];
+      const iApt = cells.findIndex(function(c){ return /^apartamento/i.test(c); });
+      const iDia = cells.findIndex(function(c){ return /^d[íi]a$/i.test(c); });
+      if (iApt >= 0 && iDia >= 0){
+        hRow = r;
+        cols = {
+          apt: iApt, dia: iDia,
+          sem: cells.findIndex(function(c){ return /^semana/i.test(c); }),
+          tor: cells.findIndex(function(c){ return /^torre$/i.test(c); }),
+          est: cells.findIndex(function(c){ return /^estado/i.test(c); })
+        };
+        break;
+      }
+    }
+    if (cols){
+      const map = new Map(), orden = [];
+      let torre = null;
+      for (let r = hRow + 1; r < rows.length; r++){
+        const c = rows[r];
+        const dia = norm(c[cols.dia]), apt = norm(c[cols.apt]);
+        if (!dia || !apt) continue;
+        const key = dia.toUpperCase();
+        if (!map.has(key)){
+          map.set(key, { header:key, apts:[], estados:[], torre:null,
+                         grupo: cols.sem >= 0 ? norm(c[cols.sem]) : null });
+          orden.push(key);
+        }
+        const d = map.get(key);
+        d.apts.push(apt);
+        let est = 'pendiente';
+        const e = cols.est >= 0 ? norm(c[cols.est]) : '';
+        if (/^no/i.test(e)) est = 'no-atendido';
+        else if (/^atend/i.test(e)) est = 'atendido';
+        d.estados.push(est);
+        const t = cols.tor >= 0 ? norm(c[cols.tor]) : '';
+        if (RE_TORRE.test(t)){
+          d.torre = t.toUpperCase().replace(/[\s-]/g,'');
+          torre = torre || d.torre;
+        }
+      }
+      const dias = orden.map(function(k){ return map.get(k); });
+      return {
+        dias  : dias,
+        torre : torre,
+        grupos: dias.some(function(d){ return d.grupo; })
+                ? dias.map(function(d){ return d.grupo || ''; }) : null
+      };
+    }
+
+    // 2b) Formato cuadro por columnas (como la imagen de Torre 2)
+    const heads = [];
+    rows.forEach(function(c, r){
+      c.forEach(function(t, cc){
+        if (t && RE_DIA.test(t)) heads.push({ r:r, c:cc, txt:t });
+      });
+    });
+    if (!heads.length) return { dias:[], torre:null, grupos:null };
+
+    const colStarts = Array.from(new Set(heads.map(function(h){ return h.c; }))).sort(function(a,b){ return a-b; });
+    const maxC = Math.max.apply(null, [0].concat(rows.map(function(r){ return r.length; })));
+    const dias = [];
+    let torre = null;
+
+    colStarts.forEach(function(c0, bi){
+      const c1 = bi + 1 < colStarts.length ? colStarts[bi + 1] : maxC;
+      const hs = heads.filter(function(h){ return h.c === c0; }).sort(function(a,b){ return a.r - b.r; });
+      hs.forEach(function(h, i){
+        const rFin = i + 1 < hs.length ? hs[i + 1].r : rows.length;
+        const apts = [];
+        let torDia = null;
+        for (let r = h.r + 1; r < rFin; r++){
+          const band = (rows[r] || []).slice(c0, c1);
+          if (band.some(function(t){ return t && RE_DIA.test(t); })) break;
+          let apt = null;
+          band.forEach(function(t){
+            if (!t) return;
+            if (RE_TORRE.test(t)){ torDia = torDia || t.toUpperCase().replace(/[\s-]/g,''); return; }
+            if (RE_NUM.test(t) || RE_MES.test(t)) return;
+            if (apt == null) apt = t;
+          });
+          if (apt != null) apts.push(apt);
+        }
+        if (apts.length){
+          dias.push({ header: h.txt.toUpperCase(), apts: apts, torre: torDia });
+          torre = torre || torDia;
+        }
+      });
+    });
+    return { dias: dias, torre: torre, grupos: null };
+  }
+
+  /* ---------- Parser 3: palabras con coordenadas (OCR / PDF) ---------- */
+  function palabrasADias(words){
+    const ws = (words || []).filter(function(w){ return w && norm(w.text); });
+    ws.forEach(function(w){
+      w.text = norm(w.text);
+      w.cy = (w.y0 + w.y1) / 2;
+      w.cx = (w.x0 + w.x1) / 2;
+    });
+    if (!ws.length) return { dias:[], torre:null, grupos:null };
+    ws.sort(function(a,b){ return a.cy - b.cy; });
+
+    // Agrupar palabras en líneas
+    const lines = [];
+    ws.forEach(function(w){
+      const h = Math.max(6, w.y1 - w.y0);
+      let L = null;
+      for (let i = lines.length - 1; i >= 0; i--){
+        if (Math.abs(lines[i].cy - w.cy) < Math.max(6, h * 0.6)){ L = lines[i]; break; }
+        if (w.cy - lines[i].cy > h * 2) break;
+      }
+      if (L) L.words.push(w);
+      else lines.push({ cy:w.cy, words:[w] });
+    });
+
+    // Líneas que contienen encabezados de día
+    const hLines = lines.filter(function(l){
+      return l.words.some(function(w){ return RE_DIA.test(w.text); });
+    });
+    if (!hLines.length) return { dias:[], torre:null, grupos:null };
+
+    function gruposDeLinea(l){
+      const sorted = l.words.slice().sort(function(a,b){ return a.x0 - b.x0; });
+      const gs = []; let cur = null;
+      sorted.forEach(function(w){
+        if (RE_DIA.test(w.text)){ cur = { words:[w] }; gs.push(cur); }
+        else if (cur) cur.words.push(w);
+      });
+      gs.forEach(function(g){
+        g.center = (g.words[0].x0 + g.words[g.words.length - 1].x1) / 2;
+        g.text = g.words.map(function(w){ return w.text; }).join(' ');
+      });
+      return gs;
+    }
+
+    // Bandas (columnas) a partir de la primera fila de encabezados
+    const topGroups = gruposDeLinea(hLines[0]);
+    const bounds = [-Infinity];
+    for (let i = 1; i < topGroups.length; i++){
+      bounds.push((topGroups[i - 1].center + topGroups[i].center) / 2);
+    }
+    bounds.push(Infinity);
+    const nb = topGroups.length;
+    function bandOf(cx){
+      for (let i = 0; i < nb; i++){
+        if (cx >= bounds[i] && cx < bounds[i + 1]) return i;
+      }
+      return 0;
+    }
+
+    // Encabezados por banda
+    const heads = [];
+    hLines.forEach(function(l){
+      gruposDeLinea(l).forEach(function(g){
+        heads.push({ cy:l.cy, b:bandOf(g.center), text:g.text });
+      });
+    });
+
+    const dias = [];
+    let torre = null;
+    for (let b = 0; b < nb; b++){
+      const hb = heads.filter(function(h){ return h.b === b; }).sort(function(a,b2){ return a.cy - b2.cy; });
+      hb.forEach(function(h, i){
+        const yTop = h.cy + 7;
+        const yBot = i + 1 < hb.length ? hb[i + 1].cy - 7 : Infinity;
+        const apts = [];
+        lines.forEach(function(l){
+          if (l.cy <= yTop || l.cy >= yBot) return;
+          const enBanda = l.words.filter(function(w){ return bandOf(w.cx) === b; })
+                                 .sort(function(a,b2){ return a.x0 - b2.x0; });
+          const tw = enBanda.find(function(w){ return RE_TORRE.test(w.text); });
+          if (tw && !torre) torre = tw.text.toUpperCase().replace(/[\s-]/g,'');
+          const cand = enBanda.map(function(w){ return w.text; }).filter(function(t){
+            return t && !RE_NUM.test(t) && !RE_TORRE.test(t) && !RE_DIA.test(t)
+                   && !RE_MES.test(t) && !/^[—\-–|.:]+$/.test(t);
+          });
+          if (!cand.length) return;
+          let apt = cand.join(' ')
+            .replace(/\s*-\s*/g, '-')
+            .replace(/([0-9][A-Z])\s+(PH)/i, '$1-$2');
+          apt = norm(apt);
+          if (apt) apts.push(apt);
+        });
+        if (apts.length) dias.push({ header: norm(h.text).toUpperCase(), apts: apts });
+      });
+    }
+    return { dias: dias, torre: torre, grupos: null };
+  }
+
+  function torreDeTexto(raw){
+    const m = String(raw || '').match(/\bTORRE\s+([0-9]+[A-Z]?)/i);
+    return m ? 'T' + m[1].toUpperCase() : null;
+  }
+
+  /* ---------- Carga perezosa de librerías (OCR / PDF) ---------- */
+  function cargarScript(src){
+    return new Promise(function(res, rej){
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = res;
+      s.onerror = function(){ rej(new Error('No se pudo cargar ' + src + ' (revisa tu internet).')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function tessLogger(m){
+    const map = {
+      'loading tesseract core'   : 'Cargando motor OCR…',
+      'initializing tesseract'   : 'Iniciando OCR…',
+      'loading language traineddata': 'Descargando idioma español…',
+      'initializing api'         : 'Preparando…',
+      'recognizing text'         : 'Leyendo imagen…'
+    };
+    const lbl = map[m.status] || m.status || 'Procesando…';
+    impProg(true, lbl + (m.progress != null ? ' ' + Math.round(m.progress * 100) + '%' : ''), (m.progress || 0) * 100);
+  }
+
+  let tessWorker = null;
+  async function getTessWorker(){
+    if (tessWorker) return tessWorker;
+    if (typeof Tesseract === 'undefined'){
+      await cargarScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+    }
+    tessWorker = await Tesseract.createWorker('spa', 1, { logger: tessLogger });
+    return tessWorker;
+  }
+
+  async function ensurePdfJs(){
+    if (typeof pdfjsLib === 'undefined'){
+      await cargarScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  }
+
+  function extraerPalabras(data){
+    // TSV (nivel 5 = palabra): left top width height en cols 6-9, texto en col 11
+    if (data.tsv){
+      const out = [];
+      String(data.tsv).split(/\r?\n/).forEach(function(ln){
+        const c = ln.split('\t');
+        if (c.length >= 12 && c[0] === '5'){
+          const t = norm(c[11]);
+          if (t) out.push({ text:t, x0:+c[6], y0:+c[7], x1:+c[6] + +c[8], y1:+c[7] + +c[9] });
+        }
+      });
+      if (out.length) return out;
+    }
+    if (data.blocks && data.blocks.length){
+      const out = [];
+      data.blocks.forEach(function(b){ (b.paragraphs || []).forEach(function(p){ (p.lines || []).forEach(function(l){ (l.words || []).forEach(function(w){
+        if (w.text && w.bbox) out.push({ text:w.text, x0:w.bbox.x0, y0:w.bbox.y0, x1:w.bbox.x1, y1:w.bbox.y1 });
+      }); }); }); });
+      if (out.length) return out;
+    }
+    if (data.words && data.words.length){
+      return data.words.filter(function(w){ return w.text && w.bbox; })
+        .map(function(w){ return { text:w.text, x0:w.bbox.x0, y0:w.bbox.y0, x1:w.bbox.x1, y1:w.bbox.y1 }; });
+    }
+    return [];
+  }
+
+  function cargarImagen(file){
+    return new Promise(function(res, rej){
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = function(){ res(img); URL.revokeObjectURL(url); };
+      img.onerror = function(){ rej(new Error('No se pudo leer la imagen.')); URL.revokeObjectURL(url); };
+      img.src = url;
+    });
+  }
+
+  async function prepararImagen(file){
+    const img = await cargarImagen(file);
+    const escala = Math.min(3, Math.max(1, 1600 / img.naturalWidth));
+    const cv = document.createElement('canvas');
+    cv.width  = Math.round(img.naturalWidth * escala);
+    cv.height = Math.round(img.naturalHeight * escala);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    return cv;
+  }
+
+  async function ocrCanvas(cv){
+    const worker = await getTessWorker();
+    const r = await worker.recognize(cv, {}, { text:true, blocks:true, tsv:true });
+    return r.data;
+  }
+
+  /* ---------- Resultado → pantalla de revisión ---------- */
+  function finishParse(res){
+    impProg(false);
+    if (!res.dias || !res.dias.length){
+      if (res.raw){
+        impTextarea.value = res.raw;
+        impTab('texto');
+      }
+      alert('No pude detectar días (encabezados tipo "LUNES 16 NOVIEMBRE").\nRevisa el archivo, o corrige el texto en la pestaña "Pegar texto" y pulsa Analizar.');
+      return;
+    }
+    mostrarPreview(res);
+  }
+
+  function mostrarPreview(res){
+    impRes = res;
+    impStepSource.hidden = true;
+    impStepPrev.hidden = false;
+
+    const total = res.dias.reduce(function(s,d){ return s + d.apts.length; }, 0);
+    const conOCR = res.origen === 'imagen' || res.origen === 'pdf-ocr';
+    impSummary.textContent = '✓ ' + res.dias.length + ' días · ' + total + ' apartamentos detectados'
+      + (conOCR ? ' — revisa con cuidado, el OCR puede equivocarse' : '');
+
+    const nomTorre = res.torre ? 'Torre ' + res.torre.replace(/^T/i,'')
+                               : 'Torre ' + (appState.torres.length + 1);
+    impTitulo.value = 'Cronograma para Sistema Contra Incendio ' + nomTorre;
+    impPorCol.value = 6;
+    impPorCol.disabled = !!res.grupos;
+    impTargetName.textContent = nombreCorto(getActiva().titulo);
+    document.querySelector('input[name="impTarget"][value="nueva"]').checked = true;
+
+    impTable.innerHTML = '';
+    res.dias.forEach(function(d){
+      const tr = document.createElement('tr');
+      const td1 = document.createElement('td');
+      const i1 = document.createElement('input');
+      i1.type = 'text'; i1.className = 'imp-in-dia'; i1.value = d.header;
+      td1.appendChild(i1);
+      const td2 = document.createElement('td');
+      const i2 = document.createElement('input');
+      i2.type = 'text'; i2.className = 'imp-in-apts'; i2.value = d.apts.join(', ');
+      td2.appendChild(i2);
+      const td3 = document.createElement('td');
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'imp-del'; b.textContent = '✕'; b.title = 'Quitar este día';
+      b.addEventListener('click', function(){ tr.remove(); });
+      td3.appendChild(b);
+      tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+      impTable.appendChild(tr);
+    });
+
+    impRawWrap.hidden = !res.raw;
+    impRaw.textContent = res.raw || '';
+  }
+
+  /* ---------- Aplicar importación ---------- */
+  document.getElementById('impApply').addEventListener('click', function(){
+    const filasDias = Array.from(impTable.querySelectorAll('tr')).map(function(tr){
+      return {
+        header: norm(tr.querySelector('.imp-in-dia').value).toUpperCase(),
+        apts  : tr.querySelector('.imp-in-apts').value.split(/[,;]+/).map(norm).filter(Boolean)
+      };
+    }).filter(function(d){ return d.header && d.apts.length; });
+
+    if (!filasDias.length){ alert('No queda ningún día con apartamentos.'); return; }
+
+    // Conservar estados/torre/grupo originales cuando el encabezado no cambió
+    const byHeader = {};
+    (impRes.dias || []).forEach(function(d){ byHeader[d.header] = d; });
+    filasDias.forEach(function(d){
+      const o = byHeader[d.header];
+      d.estados = o && o.estados;
+      d.torre   = o && o.torre;
+      d.grupo   = o && o.grupo;
+    });
+
+    const titulo = norm(impTitulo.value) || 'Cronograma para Sistema Contra Incendio';
+    let torreLabel = impRes.torre;
+    if (!torreLabel){
+      const m = titulo.match(/torre\s+([0-9]+[a-z]?)/i);
+      if (m) torreLabel = 'T' + m[1].toUpperCase();
+    }
+    const porCol = Math.max(1, Math.min(10, parseInt(impPorCol.value, 10) || 6));
+    const semanas = semanasDesdeLista(
+      filasDias, porCol, torreLabel || 'T1',
+      impRes.grupos ? filasDias.map(function(d){ return d.grupo || ''; }) : null
+    );
+
+    const target = document.querySelector('input[name="impTarget"]:checked').value;
+    if (target === 'reemplazar'){
+      if (!confirm('Se reemplazará el cronograma de "' + nombreCorto(getActiva().titulo)
+                   + '" y su avance actual. ¿Continuar?')) return;
+      const t = getActiva();
+      t.titulo = titulo;
+      t.semanas = semanas;
+      restaurarEstado(t);
+    } else {
+      const t = { id:uid(), titulo:titulo, semanas:semanas };
+      syncActiva();
+      appState.torres.push(t);
+      appState.torreActiva = t.id;
+      restaurarEstado(t);
+    }
+
+    guardarEstado();
+    cerrarImport();
+    window.scrollTo({top:0, behavior:'smooth'});
+    const total = filasDias.reduce(function(s,d){ return s + d.apts.length; }, 0);
+    alert('✓ Importado: ' + filasDias.length + ' días, ' + total + ' apartamentos.');
+  });
+
+  /* ---------- Origen: pegar texto ---------- */
+  document.getElementById('impAnalizar').addEventListener('click', function(){
+    const txt = impTextarea.value || '';
+    if (!norm(txt)){ alert('Pega primero el texto o la tabla.'); return; }
+    let res;
+    if (txt.indexOf('\t') >= 0){
+      res = parseMatriz(txt.split(/\r?\n/).map(function(l){ return l.split('\t'); }));
+    } else {
+      res = parseTexto(txt);
+      if (!res.dias.length){
+        res = parseMatriz(txt.split(/\r?\n/).map(function(l){ return [l]; }));
+      }
+    }
+    res.origen = 'texto';
+    finishParse(res);
+  });
+
+  /* ---------- Origen: Excel / CSV ---------- */
+  document.getElementById('impBtnExcel').addEventListener('click', function(){
+    document.getElementById('impFileExcel').click();
+  });
+  document.getElementById('impFileExcel').addEventListener('change', async function(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try{
+      if (typeof XLSX === 'undefined'){
+        alert('No se pudo cargar SheetJS. Verifica tu conexión a internet.');
+        return;
+      }
+      impProg(true, 'Leyendo Excel…', 30);
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type:'array' });
+      let best = null;
+      for (const sn of wb.SheetNames){
+        const aoa = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, raw:false, defval:'' });
+        const r = parseMatriz(aoa);
+        if (r.dias.length){ best = r; break; }
+      }
+      if (best){ best.origen = 'excel'; finishParse(best); }
+      else { impProg(false); alert('No encontré días en el archivo. Revisa que tenga encabezados tipo "LUNES 16 NOVIEMBRE" o columnas Día/Apartamento.'); }
+    }catch(err){
+      console.error(err);
+      impProg(false);
+      alert('Error al leer el Excel: ' + err.message);
+    }finally{
+      e.target.value = '';
+    }
+  });
+
+  /* ---------- Origen: imagen (OCR) ---------- */
+  document.getElementById('impBtnImg').addEventListener('click', function(){
+    document.getElementById('impFileImg').click();
+  });
+  document.getElementById('impFileImg').addEventListener('change', async function(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try{
+      impProg(true, 'Preparando imagen…', 5);
+      const cv = await prepararImagen(file);
+      const data = await ocrCanvas(cv);
+      const res = palabrasADias(extraerPalabras(data));
+      res.raw = data.text || '';
+      if (!res.torre) res.torre = torreDeTexto(res.raw);
+      res.origen = 'imagen';
+      finishParse(res);
+    }catch(err){
+      console.error(err);
+      impProg(false);
+      alert('No se pudo leer la imagen: ' + err.message);
+    }finally{
+      e.target.value = '';
+    }
+  });
+
+  /* ---------- Origen: PDF ---------- */
+  document.getElementById('impBtnPdf').addEventListener('click', function(){
+    document.getElementById('impFilePdf').click();
+  });
+  document.getElementById('impFilePdf').addEventListener('change', async function(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try{
+      impProg(true, 'Abriendo PDF…', 5);
+      await ensurePdfJs();
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data:new Uint8Array(buf) }).promise;
+      const dias = [];
+      let torre = null, raw = '', usoOCR = false;
+      const nP = Math.min(pdf.numPages, 3);
+
+      for (let p = 1; p <= nP; p++){
+        impProg(true, 'Leyendo PDF página ' + p + '/' + nP + '…', (p / nP) * 40);
+        const page = await pdf.getPage(p);
+        const vp = page.getViewport({ scale:1 });
+        const tc = await page.getTextContent();
+        const words = tc.items.filter(function(i){ return i.str && i.str.trim(); })
+          .map(function(i){
+            return {
+              text: i.str,
+              x0: i.transform[4],
+              y0: vp.height - i.transform[5] - (i.height || 10),
+              x1: i.transform[4] + (i.width || i.str.length * 5),
+              y1: vp.height - i.transform[5] + 2
+            };
+          });
+        if (words.length >= 8){
+          const r = palabrasADias(words);
+          dias.push.apply(dias, r.dias);
+          torre = torre || r.torre;
+          raw += tc.items.map(function(i){ return i.str; }).join(' ') + '\n';
+        } else {
+          // PDF escaneado → renderizar y pasar por OCR
+          usoOCR = true;
+          const vp2 = page.getViewport({ scale:2 });
+          const cv = document.createElement('canvas');
+          cv.width = vp2.width; cv.height = vp2.height;
+          await page.render({ canvasContext: cv.getContext('2d'), viewport: vp2 }).promise;
+          const data = await ocrCanvas(cv);
+          const r = palabrasADias(extraerPalabras(data));
+          dias.push.apply(dias, r.dias);
+          torre = torre || r.torre;
+          raw += (data.text || '') + '\n';
+        }
+      }
+      if (!torre) torre = torreDeTexto(raw);
+      finishParse({ dias:dias, torre:torre, grupos:null, raw:raw, origen: usoOCR ? 'pdf-ocr' : 'pdf' });
+    }catch(err){
+      console.error(err);
+      impProg(false);
+      alert('No se pudo leer el PDF: ' + err.message);
+    }finally{
+      e.target.value = '';
+    }
   });
 
   /* ============================================================
      ARRANQUE
      ============================================================ */
   (function init(){
-    const guardado = cargarEstadoGuardado();
-    if (guardado && guardado.semanas.length){
-      restaurarEstado(guardado);
-      const hora = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
-      mostrarEstado('saved', '✓ Restaurado ' + hora);
-    } else {
-      restaurarEstado(construirDefault());
-      guardarEstado();
-    }
+    appState = cargarApp();
+    if (!getActiva()) appState.torreActiva = appState.torres[0].id;
+    restaurarEstado(getActiva());
+    guardarEstado();   // persiste la migración a v2 si aplica
+    const hora = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+    mostrarEstado('saved', '✓ Listo ' + hora);
   })();
 
 })();
